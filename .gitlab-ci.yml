@@ -1,0 +1,49 @@
+workflow:
+  name: 'base-images'
+
+stages:
+  - deploy
+  - send_notification
+
+deploy:
+  stage: deploy
+  image: docker:dind
+  script:
+
+    - echo "Build docker image for azcli"
+    - cd /${CI_BUILDS_DIR}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/azcli/
+    - docker build --network=host -t registry.${DOMAIN}/azcli:latest .
+
+    - echo "Build docker image for gitlabrunnerAnsible"
+    - cd /${CI_BUILDS_DIR}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/gitlabRunnerAnsible/
+    - docker build --network=host -t registry.${DOMAIN}/glrunner:ansible .
+
+    - echo "Build docker image for gitlabrunnerBase"
+    - cd /${CI_BUILDS_DIR}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/gitlabRunnerBase/
+    - docker build --network=host -t registry.${DOMAIN}/glrunner:base .
+
+    - echo "Build docker image for gitlabrunnerTf"
+    - cd /${CI_BUILDS_DIR}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/gitlabRunnerTf/
+    - docker build --network=host -t registry.${DOMAIN}/glrunner:tf .
+
+    - |
+        echo $REGISTRY_PASSWD | docker login registry.${DOMAIN} --username $REGISTRY_USER --password-stdin
+        echo "Push images to registry"
+        docker push registry.${DOMAIN}/azcli:latest
+        docker push registry.${DOMAIN}/glrunner:ansible
+        docker push registry.${DOMAIN}/glrunner:base
+        docker push registry.${DOMAIN}/glrunner:tf
+        docker logout registry.${DOMAIN}
+
+        echo "Prune Builder"
+        docker builder prune -a -f 
+
+send_notification:
+  stage: send_notification
+  image: registry.${DOMAIN}/glrunner:base
+  script:
+    - |
+      ####  send notifications ####
+      curl -H "X-Tags: robot" -u :$NTFY_TOKEN -d "Pipeline - $CI_PIPELINE_NAME - was successfull" https://notify.${DOMAIN}/pipelines
+  needs: 
+    - deploy
