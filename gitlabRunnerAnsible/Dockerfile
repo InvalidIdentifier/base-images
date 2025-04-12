@@ -1,5 +1,5 @@
 # ansible-based image
-from willhallonline/ansible:2.13.11-alpine-3.18
+from willhallonline/ansible:2.18-alpine-3.18
 
 # update and install necessary packages
 run apk update && \
