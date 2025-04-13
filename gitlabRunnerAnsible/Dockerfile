@@ -7,4 +7,5 @@ run apk update && \
     openssh-client \
     ca-certificates \
     bash \
-    py3-netaddr
+    py3-netaddr \
+    kubectl
