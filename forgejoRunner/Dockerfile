@@ -53,7 +53,9 @@ RUN apk update && apk add --no-cache \
     kubectl \
     helm \
     git \
-    python3
+    python3 \
+    nodejs \
+    npm
 
 # copy terraform binary
 COPY --from=builder /tmp/terraform /usr/local/bin/terraform
