@@ -37,7 +37,7 @@ deploy:
         docker push registry.${DOMAIN}/glrunner:ansible
         docker push registry.${DOMAIN}/glrunner:base
         docker push registry.${DOMAIN}/glrunner:tf
-        docker push registry.${DOMAIN}/forgejoRunner:latest
+        docker push registry.${DOMAIN}/forgerunner:latest
         docker logout registry.${DOMAIN}
 
         echo "Prune Builder"
