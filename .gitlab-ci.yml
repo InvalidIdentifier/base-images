@@ -26,6 +26,10 @@ deploy:
     - cd /${CI_BUILDS_DIR}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/gitlabRunnerTf/
     - docker build --network=host -t registry.${DOMAIN}/glrunner:tf .
 
+    - echo "Build docker image for forgejo runner"
+    - cd /${CI_BUILDS_DIR}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/forgejoRunner/
+    - docker build --network=host -t registry.${DOMAIN}/forgejoRunner:latest .
+
     - |
         echo $REGISTRY_PASSWD | docker login registry.${DOMAIN} --username $REGISTRY_USER --password-stdin
         echo "Push images to registry"
@@ -33,6 +37,7 @@ deploy:
         docker push registry.${DOMAIN}/glrunner:ansible
         docker push registry.${DOMAIN}/glrunner:base
         docker push registry.${DOMAIN}/glrunner:tf
+        docker push registry.${DOMAIN}/forgejoRunner:latest
         docker logout registry.${DOMAIN}
 
         echo "Prune Builder"
