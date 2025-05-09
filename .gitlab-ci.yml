@@ -28,7 +28,7 @@ deploy:
 
     - echo "Build docker image for forgejo runner"
     - cd /${CI_BUILDS_DIR}/${CI_PROJECT_NAMESPACE}/${CI_PROJECT_NAME}/forgejoRunner/
-    - docker build --network=host -t registry.${DOMAIN}/forgejoRunner:latest .
+    - docker build --network=host -t registry.${DOMAIN}/forgerunner:latest .
 
     - |
         echo $REGISTRY_PASSWD | docker login registry.${DOMAIN} --username $REGISTRY_USER --password-stdin
